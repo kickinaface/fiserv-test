@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+
+    <style>
+        .itemTitle{
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .imageDescriptionWrapper{
+            display: none;
+        }
+        .copyrightDateWrapper{
+            margin-top:6px;
+        }
+        .copyrightDateWrapper span{
+            background: lightgray;
+            padding: 10px;
+            font-style: italic;
+        }
+        .description{
+            padding: 15px;
+            background: lightyellow;
+        }
+    </style>
+
+    <script>
+        window.onload= function (e){
+            // Get JSON from server
+            function getNASA(address, callback) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', address, true);
+                xhr.reponseType = 'json';
+                xhr.onload = function () {
+                    var status = xhr.status;
+                    if(status === 200){
+                        callback(status, JSON.parse(xhr.response));
+                    }else {
+                        callback(status, xhr.response);
+                    }
+                }
+                xhr.send();
+            };
+
+            getNASA("https://api.nasa.gov/planetary/apod?api_key=8vIgFXn4xJ6YiFW0F4hFQouq1Eg7GO4cdkpo62m8", function (status, response){
+                console.log(status);
+                console.log(response);
+                document.querySelector('.itemTitle').innerHTML = "<span>"+response.title+"</span>";
+                document.querySelector('.nasaImage').src = response.url;
+                document.querySelector('.copyrightDateWrapper').innerHTML = "<span>"+response.copyright+" "+response.date+"</span>";
+                document.querySelector('.description').innerHTML = response.explanation;
+            });
+
+            document.querySelector('.itemTitle').onclick = function (e){
+                console.log(e);
+                document.querySelector('.imageDescriptionWrapper').style.display = 'block';
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="NasaContentWrapper">
+        <h1 class="itemTitle"></h1>
+        <div class="imageDescriptionWrapper">
+            <img class="nasaImage" />
+            <div class="copyrightDateWrapper"></div>
+            <p>
+                <div class="description"></div>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
